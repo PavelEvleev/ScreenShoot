@@ -21,7 +21,7 @@ namespace ScreenShoot_Server
              x = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
              y = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height;
             Console.WriteLine(x + " x " + y);
-            //по не понятным причинам при подстановке System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width/Height он дает не правильные значения пришлось через переменные
+            //по не понятным причинам при подстановке System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width/Height  дает не правильные значения пришлось через переменные
 
             Socket receivSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
             receivSocket.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1024));
