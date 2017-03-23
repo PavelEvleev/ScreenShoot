@@ -106,15 +106,36 @@ namespace ScreenShoot_Server
             {
                 Npackets = buffer.Length / 8191;
             }
-            for(int i=0; i <= Npackets; i++)
+            try
             {
-                UdpClient sendMes = new UdpClient();
-                byte[] bufferSend = new byte[8192];
-                Array.Copy(buffer, 0*8191, bufferSend, 1, 8191);
-                bufferSend[0] = Convert.ToByte(i);
-                Thread.Sleep(1000);
-                sendMes.Send(bufferSend, bufferSend.Length, reciever);
-                sendMes.Close();
+                for (int i = 0; i < Npackets; i++)
+                {
+                    UdpClient sendMes = new UdpClient();
+                    byte[] bufferSend = new byte[8192];
+                    if (i > 0 && i == Npackets - 1)
+                    {
+                        int end = buffer.Length - i * 8191;
+                        Array.Copy(buffer, i * 8191 + 1, bufferSend, 1, end);
+                    }
+                    else if (i == 0)
+                    {
+                        Array.Copy(buffer, i * 8191, bufferSend, 1, 8191);
+                    }
+                    else
+                    {
+                        Array.Copy(buffer, i * 8191 + 1, bufferSend, 1, 8191);
+                    }
+
+                    bufferSend[0] = Convert.ToByte(i);
+                    Thread.Sleep(1000);
+                    sendMes.Send(bufferSend, bufferSend.Length, reciever);
+                    sendMes.Close();
+                }
+            }
+            catch(ArgumentException ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                Console.WriteLine(ex.Message);
             }
             UdpClient Break = new UdpClient();
             byte[] breakWord = Encoding.Unicode.GetBytes("break");
