@@ -3,3 +3,9 @@ D:\Visual Studio 2015\Projects\NP\ScreenShoot\ScreenShoot_Server\bin\Debug\Scree
 D:\Visual Studio 2015\Projects\NP\ScreenShoot\ScreenShoot_Server\bin\Debug\ScreenShoot_Server.pdb
 D:\Visual Studio 2015\Projects\NP\ScreenShoot\ScreenShoot_Server\obj\Debug\ScreenShoot_Server.exe
 D:\Visual Studio 2015\Projects\NP\ScreenShoot\ScreenShoot_Server\obj\Debug\ScreenShoot_Server.pdb
+D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot_Server\bin\Debug\ScreenShoot_Server.exe.config
+D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot_Server\bin\Debug\ScreenShoot_Server.exe
+D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot_Server\bin\Debug\ScreenShoot_Server.pdb
+D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot_Server\obj\Debug\ScreenShoot_Server.exe
+D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot_Server\obj\Debug\ScreenShoot_Server.pdb
+D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot_Server\obj\Debug\ScreenShoot_Server.csprojResolveAssemblyReference.cache

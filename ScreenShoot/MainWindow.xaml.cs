@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,20 +51,64 @@ namespace ScreenShoot
             socketToSend.SendToAsync(arg);
 
             byte[] reciev = new byte[250000];
+            Thread threadReciev = new Thread(new ThreadStart(Reciev));
+            threadReciev.Start();
+           
+            //Socket socketToReciev = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
+            //socketToReciev.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1025));
 
-            Socket socketToReciev = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
-            socketToReciev.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1025));
+            //var arg1 = new SocketAsyncEventArgs()
+            //{
+            //    RemoteEndPoint = new IPEndPoint(IPAddress.Any,0)
+            //};
 
-            var arg1 = new SocketAsyncEventArgs()
-            {
-                RemoteEndPoint = new IPEndPoint(IPAddress.Any,0)
-            };
+            //arg1.SetBuffer(reciev, 0, reciev.Length);
+            //arg1.Completed += Receive_Completed;
 
-            arg1.SetBuffer(reciev, 0, reciev.Length);
-            arg1.Completed += Receive_Completed;
-
-            socketToReciev.ReceiveFromAsync(arg1);
+            //socketToReciev.ReceiveFromAsync(arg1);
             //клиент не получает обратно сообщение
+        }
+        void Reciev()
+        {
+            bool all = true;
+            List<byte[]> messages = new List<byte[]>();
+
+            while (all)
+            {
+                UdpClient recievMess = new UdpClient(1025);
+                IPEndPoint get = null;
+                var recievByty = recievMess.Receive(ref get);
+
+                string s = Encoding.Unicode.GetString(recievByty);
+                if (s != "break")
+                {
+                    messages.Add(recievByty);
+                }else if (s == "break")
+                {
+                    all = false;
+                }
+                recievMess.Close();
+            }
+            List<byte[]> SortedMessage = new List<byte[]>();
+            for(int i =0; i < messages.Count; i++)
+            {
+                foreach(var n in messages)
+                {
+                    if (Convert.ToInt32(n[0]) == i)
+                    {
+                        SortedMessage.Add(n);
+                    }
+                }
+            }
+
+            int countByte = 0;
+            foreach(var n in SortedMessage)
+            {
+                countByte += n.Length - 1;
+            }
+            byte[] fullMessage = new byte[countByte];
+
+
         }
 
         private void Receive_Completed(object sender, SocketAsyncEventArgs e)
@@ -71,10 +116,10 @@ namespace ScreenShoot
             Dispatcher.Invoke(() =>
             {
                 textBox.Text = e.BytesTransferred.ToString();
-                foreach (var b in e.Buffer)
-                {
-                    textBox.Text += b.ToString() + " ";
-                }
+                //foreach (var b in e.Buffer)
+                //{
+                //    textBox.Text += b.ToString() + " ";
+                //}
             });
         }
 

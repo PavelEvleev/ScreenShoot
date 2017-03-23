@@ -10,6 +10,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace ScreenShoot_Server
 {
@@ -18,8 +19,10 @@ namespace ScreenShoot_Server
         public static int x,y;
         static void Main(string[] args)
         {
-             x = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
-             y = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height;
+           
+            
+             x = Screen.PrimaryScreen.Bounds.Width; 
+             y = Screen.PrimaryScreen.Bounds.Height;
             Console.WriteLine(x + " x " + y);
             //по не понятным причинам при подстановке System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width/Height  дает не правильные значения пришлось через переменные
 
@@ -58,7 +61,7 @@ namespace ScreenShoot_Server
                     
                     btm.Save(stream, ImageFormat.Jpeg);
                     buffer = stream.ToArray();
-                    Console.WriteLine("Send buffer = {0}", buffer.Length);
+                    Console.WriteLine("send buffer = {0}", buffer.Length);
                     //FileStream fs = new FileStream("Fi.jpeg", FileMode.Create);
                     //fs.Write(buffer, 0, buffer.Length);
                     //fs.Flush();
@@ -66,15 +69,16 @@ namespace ScreenShoot_Server
                 }
             }
             Thread.Sleep(1000);
-            Socket sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
+            StartSendToAsync(buffer);
+            //Socket sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
 
-            var arg = new SocketAsyncEventArgs()
-            {
-                RemoteEndPoint= new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1025)
-            };
-            arg.SetBuffer(buffer, 0, buffer.Length);
-            arg.Completed += Send_Completed;
-            sendSocket.SendToAsync(arg);
+            //var arg = new SocketAsyncEventArgs()
+            //{
+            //    RemoteEndPoint= new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1025)
+            //};
+            //arg.SetBuffer(buffer, 0, buffer.Length);
+            //arg.Completed += Send_Completed;
+            //sendSocket.SendToAsync(arg);
             //отправка проходит успешно
         }
 
@@ -84,5 +88,50 @@ namespace ScreenShoot_Server
             (sender as Socket).Close();
             Console.WriteLine("Send completed");
         }
+       
+            //отправка проходит успешно
+
+        public static void StartSendToAsync(byte[] buffer)
+        {
+            IPEndPoint reciever = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1025);
+            
+            //разбивать массив на пакеты длинной в 8192 байта, добавлять первым битом порядковый номер покета , на клиенте вычитывать покет и добавлять его в List, после выставить по порядку и получить массив.
+            int Npackets = 0;
+            if (0 < buffer.Length % 8191)
+            {
+                Npackets = buffer.Length / 8191;
+                Npackets += 1;
+            }
+            else
+            {
+                Npackets = buffer.Length / 8191;
+            }
+            for(int i=0; i <= Npackets; i++)
+            {
+                UdpClient sendMes = new UdpClient();
+                byte[] bufferSend = new byte[8192];
+                Array.Copy(buffer, 0*8191, bufferSend, 1, 8191);
+                bufferSend[0] = Convert.ToByte(i);
+                Thread.Sleep(1000);
+                sendMes.Send(bufferSend, bufferSend.Length, reciever);
+                sendMes.Close();
+            }
+            UdpClient Break = new UdpClient();
+            byte[] breakWord = Encoding.Unicode.GetBytes("break");
+            Break.Send(breakWord, breakWord.Length, reciever);
+            Break.Close();
+            //var mess = Encoding.Unicode.GetBytes("Hello");
+
+            //Socket sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
+
+            //var arg = new SocketAsyncEventArgs()
+            //{
+            //    RemoteEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1025)
+            //};
+            //arg.SetBuffer(buffer, 0, buffer.Length);
+            //arg.Completed += Send_Completed;
+            //sendSocket.SendToAsync(arg);
+        }
+
     }
 }
