@@ -62,24 +62,15 @@ namespace ScreenShoot_Server
                     btm.Save(stream, ImageFormat.Jpeg);
                     buffer = stream.ToArray();
                     Console.WriteLine("send buffer = {0}", buffer.Length);
-                    //FileStream fs = new FileStream("Fi.jpeg", FileMode.Create);
-                    //fs.Write(buffer, 0, buffer.Length);
-                    //fs.Flush();
-                    //fs.Close();
+                    FileStream fs = new FileStream("Fi.jpeg", FileMode.Create);
+                    fs.Write(buffer, 0, buffer.Length);
+                    fs.Flush();
+                    fs.Close();
                 }
             }
             Thread.Sleep(1000);
             StartSendToAsync(buffer);
-            //Socket sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
-
-            //var arg = new SocketAsyncEventArgs()
-            //{
-            //    RemoteEndPoint= new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1025)
-            //};
-            //arg.SetBuffer(buffer, 0, buffer.Length);
-            //arg.Completed += Send_Completed;
-            //sendSocket.SendToAsync(arg);
-            //отправка проходит успешно
+           
         }
 
         private static void Send_Completed(object sender, SocketAsyncEventArgs e)
@@ -142,21 +133,15 @@ namespace ScreenShoot_Server
                 Console.WriteLine(ex.StackTrace);
                 Console.WriteLine(ex.Message);
             }
+            UdpClient SendLength = new UdpClient();
+            byte[] lengthBuffer = Encoding.Unicode.GetBytes(buffer.Length.ToString());
+            SendLength.Send(lengthBuffer, lengthBuffer.Length, reciever);
+            SendLength.Close();
             UdpClient Break = new UdpClient();
             byte[] breakWord = Encoding.Unicode.GetBytes("break");
             Break.Send(breakWord, breakWord.Length, reciever);
             Break.Close();
-            //var mess = Encoding.Unicode.GetBytes("Hello");
-
-            //Socket sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
-
-            //var arg = new SocketAsyncEventArgs()
-            //{
-            //    RemoteEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1025)
-            //};
-            //arg.SetBuffer(buffer, 0, buffer.Length);
-            //arg.Completed += Send_Completed;
-            //sendSocket.SendToAsync(arg);
+          
         }
 
     }

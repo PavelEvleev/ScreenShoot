@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -15,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Drawing.Imaging;
 
 namespace ScreenShoot
 {
@@ -53,21 +55,8 @@ namespace ScreenShoot
             byte[] reciev = new byte[250000];
             Thread threadReciev = new Thread(new ThreadStart(Reciev));
             threadReciev.Start();
-           
-            //Socket socketToReciev = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
-            //socketToReciev.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1025));
-
-            //var arg1 = new SocketAsyncEventArgs()
-            //{
-            //    RemoteEndPoint = new IPEndPoint(IPAddress.Any,0)
-            //};
-
-            //arg1.SetBuffer(reciev, 0, reciev.Length);
-            //arg1.Completed += Receive_Completed;
-
-            //socketToReciev.ReceiveFromAsync(arg1);
-            //клиент не получает обратно сообщение
         }
+
         void Reciev()
         {
             bool all = true;
@@ -89,37 +78,46 @@ namespace ScreenShoot
                 }
                 recievMess.Close();
             }
-            List<byte[]> SortedMessage = new List<byte[]>();
-            for(int i =0; i < messages.Count; i++)
+
+            int lengthMessage= int.Parse(Encoding.Unicode.GetString(messages.Last()));
+            byte[] fullMessage = new byte[lengthMessage];
+            messages.Remove(messages.Last());
+
+            int countByte = 0;
+            for (int i = 0; i < messages.Count; i++)
             {
-                foreach(var n in messages)
+                if (i == messages.Count - 1)
                 {
-                    if (Convert.ToInt32(n[0]) == i)
-                    {
-                        SortedMessage.Add(n);
-                    }
+                    int end = lengthMessage - countByte;
+                    Array.Copy(messages[i], 1, fullMessage, countByte, end);
+                }
+                if (i == 0)
+                {
+                    Array.Copy(messages[i], 1, fullMessage, 0, 8191);
+                    countByte += 8191+1;
+                }
+                else if(i>0 && !(i== messages.Count - 1))
+                {
+                    Array.Copy(messages[i], 1, fullMessage, countByte, 8191);
+                    countByte += 8191 + 1;
                 }
             }
 
-            int countByte = 0;
-            foreach(var n in SortedMessage)
+            using(MemoryStream streamImg= new MemoryStream(fullMessage))
             {
-                countByte += n.Length - 1;
+                System.Drawing.Image img = System.Drawing.Image.FromStream(streamImg);
+                img.Save("SendImg.jpg", ImageFormat.Jpeg);
             }
-            byte[] fullMessage = new byte[countByte];
-
-
+            Receive_Completed();
+            
         }
 
-        private void Receive_Completed(object sender, SocketAsyncEventArgs e)
+        private void Receive_Completed()
         {
             Dispatcher.Invoke(() =>
             {
-                textBox.Text = e.BytesTransferred.ToString();
-                //foreach (var b in e.Buffer)
-                //{
-                //    textBox.Text += b.ToString() + " ";
-                //}
+                textBox.Text ="Image reciev and saved";
+              
             });
         }
 
