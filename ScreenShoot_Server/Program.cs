@@ -108,22 +108,27 @@ namespace ScreenShoot_Server
             }
             try
             {
+                int beginByte = 0;
+
                 for (int i = 0; i < Npackets; i++)
                 {
                     UdpClient sendMes = new UdpClient();
                     byte[] bufferSend = new byte[8192];
+                    
                     if (i > 0 && i == Npackets - 1)
                     {
-                        int end = buffer.Length - i * 8191;
-                        Array.Copy(buffer, i * 8191 + 1, bufferSend, 1, end);
+                        int end = buffer.Length - beginByte;
+                        Array.Copy(buffer, beginByte , bufferSend, 1, end);
                     }
                     else if (i == 0)
                     {
-                        Array.Copy(buffer, i * 8191, bufferSend, 1, 8191);
+                        Array.Copy(buffer, beginByte, bufferSend, 1, 8191);
+                        beginByte += 8191+1;
                     }
                     else
                     {
-                        Array.Copy(buffer, i * 8191 + 1, bufferSend, 1, 8191);
+                        Array.Copy(buffer, beginByte, bufferSend, 1, 8191);
+                        beginByte += 8191+1;
                     }
 
                     bufferSend[0] = Convert.ToByte(i);
