@@ -12,8 +12,6 @@ D:\Visual Studio 2015\Projects\NP\ScreenShoot\ScreenShoot\obj\Debug\ScreenShoot.
 D:\Visual Studio 2015\Projects\NP\ScreenShoot\ScreenShoot\obj\Debug\ScreenShoot.exe
 D:\Visual Studio 2015\Projects\NP\ScreenShoot\ScreenShoot\obj\Debug\ScreenShoot.pdb
 D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot\bin\Debug\ScreenShoot.exe.config
-D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot\obj\Debug\ScreenShoot.exe
-D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot\obj\Debug\ScreenShoot.pdb
 D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot\bin\Debug\ScreenShoot.exe
 D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot\bin\Debug\ScreenShoot.pdb
 D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot\obj\Debug\MainWindow.g.cs
@@ -24,4 +22,5 @@ D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot\obj\Debug\MainWindow.
 D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot\obj\Debug\ScreenShoot.g.resources
 D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot\obj\Debug\ScreenShoot.Properties.Resources.resources
 D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot\obj\Debug\ScreenShoot.csproj.GenerateResource.Cache
-D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot\obj\Debug\ScreenShoot.csprojResolveAssemblyReference.cache
+D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot\obj\Debug\ScreenShoot.exe
+D:\Visual Studio 2015\Projects\NP\ScreenShoot2\ScreenShoot\obj\Debug\ScreenShoot.pdb

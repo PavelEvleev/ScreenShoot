@@ -84,7 +84,7 @@ namespace ScreenShoot_Server
 
         public static void StartSendToAsync(byte[] buffer)
         {
-            IPEndPoint reciever = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1025);
+            IPEndPoint receiver = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1025);
             
             //разбивать массив на пакеты длинной в 8192 байта, добавлять первым битом порядковый номер покета , на клиенте вычитывать покет и добавлять его в List, после выставить по порядку и получить массив.
             int Npackets = 0;
@@ -114,17 +114,17 @@ namespace ScreenShoot_Server
                     else if (i == 0)
                     {
                         Array.Copy(buffer, beginByte, bufferSend, 1, 8191);
-                        beginByte += 8191+1;
+                        beginByte += 8191;
                     }
                     else
                     {
                         Array.Copy(buffer, beginByte, bufferSend, 1, 8191);
-                        beginByte += 8191+1;
+                        beginByte += 8191;
                     }
 
                     bufferSend[0] = Convert.ToByte(i);
                     Thread.Sleep(1000);
-                    sendMes.Send(bufferSend, bufferSend.Length, reciever);
+                    sendMes.Send(bufferSend, bufferSend.Length, receiver);
                     sendMes.Close();
                 }
             }
@@ -135,11 +135,11 @@ namespace ScreenShoot_Server
             }
             UdpClient SendLength = new UdpClient();
             byte[] lengthBuffer = Encoding.Unicode.GetBytes(buffer.Length.ToString());
-            SendLength.Send(lengthBuffer, lengthBuffer.Length, reciever);
+            SendLength.Send(lengthBuffer, lengthBuffer.Length, receiver);
             SendLength.Close();
             UdpClient Break = new UdpClient();
             byte[] breakWord = Encoding.Unicode.GetBytes("break");
-            Break.Send(breakWord, breakWord.Length, reciever);
+            Break.Send(breakWord, breakWord.Length, receiver);
             Break.Close();
           
         }

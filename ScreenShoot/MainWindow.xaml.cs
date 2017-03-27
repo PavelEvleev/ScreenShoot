@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Drawing.Imaging;
+using System.Collections;
 
 namespace ScreenShoot
 {
@@ -80,30 +81,27 @@ namespace ScreenShoot
             }
 
             int lengthMessage= int.Parse(Encoding.Unicode.GetString(messages.Last()));
-            byte[] fullMessage = new byte[lengthMessage];
             messages.Remove(messages.Last());
 
-            int countByte = 0;
+            ArrayList list = new ArrayList();
+
             for (int i = 0; i < messages.Count; i++)
             {
+                var buf = new byte[8191];
+                Array.Copy(messages[i], 1, buf, 0, 8191);
+                list.AddRange(buf);
                 if (i == messages.Count - 1)
                 {
-                    int end = lengthMessage - countByte;
-                    Array.Copy(messages[i], 1, fullMessage, countByte, end);
+                    int end = lengthMessage - 8191*i;
+                    buf = new byte[end];
+                    Array.Copy(messages[i], 1, buf, 0, end);
+                    list.AddRange(buf);
                 }
-                if (i == 0)
-                {
-                    Array.Copy(messages[i], 1, fullMessage, 0, 8191);
-                    countByte += 8191+1;
-                }
-                else if(i>0 && !(i== messages.Count - 1))
-                {
-                    Array.Copy(messages[i], 1, fullMessage, countByte, 8191);
-                    countByte += 8191 + 1;
-                }
+               
             }
+            var result = (byte[])list.ToArray(typeof(byte));
 
-            using(MemoryStream streamImg= new MemoryStream(fullMessage))
+            using(MemoryStream streamImg= new MemoryStream(result))
             {
                 System.Drawing.Image img = System.Drawing.Image.FromStream(streamImg);
                 img.Save("SendImg.jpg", ImageFormat.Jpeg);
